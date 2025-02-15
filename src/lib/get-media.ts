@@ -8,10 +8,12 @@ interface VideoFormat {
   quality?: string;
 }
 
-export async function getMediaBuffer({
+export async function getMediaStream({
   url,
   format = "best",
-}: { url: string } & VideoFormat): Promise<Buffer> {
+}: { url: string } & VideoFormat): Promise<ReadableStream<
+  Uint8Array<ArrayBufferLike>
+> | null> {
   let formatString = format;
   if (!formatString) {
     formatString = "best";
@@ -28,8 +30,7 @@ export async function getMediaBuffer({
     url,
   ]);
 
-  const buffer = await new Response(ytdlpProcess.stdout).arrayBuffer();
-  return Buffer.from(buffer);
+  return ytdlpProcess.stdout;
 }
 
 export async function getVideoInfo({ url }: { url: string }) {

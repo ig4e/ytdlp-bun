@@ -1,4 +1,4 @@
-import { getMediaBuffer, getVideoInfo } from "./lib/get-media";
+import { getMediaStream, getVideoInfo } from "./lib/get-media";
 
 const media = await getVideoInfo({
   url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
@@ -6,8 +6,14 @@ const media = await getVideoInfo({
 
 console.log(media);
 
-const buffer = await getMediaBuffer({
+const stream = await getMediaStream({
   url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 });
 
-console.log(buffer);
+stream?.pipeTo(
+  new WritableStream({
+    write(chunk) {
+      console.log(chunk);
+    },
+  })
+);
